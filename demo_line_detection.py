@@ -45,6 +45,8 @@ if __name__ == "__main__":
             out = cv2.VideoWriter('result-point.avi', fourcc, 30, (512,256))
         while cap.isOpened():
             prevTime = time.time()
+            if not ret:
+                break
             ret, image = cap.read()
             t_image = cv2.resize(image,(512,256))
             x , y = net.predict(t_image)
