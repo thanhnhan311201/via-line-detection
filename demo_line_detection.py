@@ -13,7 +13,7 @@ from src.processing_image import warp_image
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-m','--model_weight', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
+    parser.add_argument('--model_weight', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
     parser.add_argument('-o','--option', type=str, default='image', help="demo line detection on single 'image', 'folder_images' or 'video', default 'image' ")
     parser.add_argument('-d','--direction', type=str, default="./images_test/wraped_image.png", help='direction of demo video')
     args = vars(parser.parse_args())
