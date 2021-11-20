@@ -1,3 +1,7 @@
+%cd /content/drive/MyDrive/Competition/UIT_Car_Racing/Lane_line_detection/via-line-detection/src/
+
+%%writefile evaluation.py
+
 import cv2
 import json 
 import torch
@@ -10,11 +14,17 @@ from tqdm import tqdm
 from data_loader import Generator
 from parameters import Parameters
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-m','--model_weight', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
+args = vars(parser.parse_args())
+    
+model = args['model_weight']
+epoch_model, loss_model = int(model.split('_')[0]), float(model.split('_')[1][7:-1])
 
 p = Parameters()
 loader = Generator()
 lane_agent = agent.Agent()
-lane_agent.load_weights(3, "tensor(0.6211)")
+lane_agent.load_weights(epoch_model, f"tensor({loss_model})")
 lane_agent.cuda()
 lane_agent.evaluate_mode()
 
@@ -33,6 +43,7 @@ def evaluation(loader, lane_agent, index= -1, thresh = p.threshold_point, name =
         #x_, y_ = find_target(x_, y_, target_h, ratio_w, ratio_h)
         x_, y_ = fitting(x_, y_, target_h, ratio_w, ratio_h)
         result_data = write_result_json(result_data, x_, y_, testset_index)
+        print(result_data)
         # util.visualize_points_origin_size(x_[0], y_[0], test_image[0]*255, ratio_w, ratio_h)
         # print(gt.shape)
         # util.visualize_points_origin_size(gt[0], y_[0], test_image[0]*255, ratio_w, ratio_h)
