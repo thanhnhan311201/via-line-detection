@@ -18,8 +18,9 @@ if __name__ == "__main__":
     parser.add_argument('-d','--direction', type=str, default="", help='direction of demo video')
     parser.add_argument('-s','--save_video', type=bool, default=False)
     args = vars(parser.parse_args())
-
-    epoch, loss = int(a.split('_')[0]), float(a.split('_')[1][7:-1])
+    
+    model = args['model_weight']
+    epoch, loss = int(model.split('_')[0]), float(model.split('_')[1][7:-1])
     
     net = Net()
     p = Parameters()
