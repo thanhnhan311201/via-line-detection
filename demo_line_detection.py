@@ -13,10 +13,9 @@ from src.processing_image import warp_image
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-m','--model_weight', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl', required=True)
-    parser.add_argument('-o','--option', type=str, default='image', help="demo line detection on single 'image', 'folder_images' or 'video', default 'image' ", required=True)
-    parser.add_argument('-d','--direction', type=str, default="", help='direction of demo video')
-    parser.add_argument('-s','--save_video', type=bool, default=False)
+    parser.add_argument('-m','--model_weight', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
+    parser.add_argument('-o','--option', type=str, default='image', help="demo line detection on single 'image', 'folder_images' or 'video', default 'image' ")
+    parser.add_argument('-d','--direction', type=str, default="./images_test/wraped_image.png", help='direction of demo video')
     args = vars(parser.parse_args())
     
     model = args['model_weight']
@@ -37,7 +36,14 @@ if __name__ == "__main__":
         print(x, y)
         image_points_result = net.get_image_points()
         # cv2.imshow("points", image_points_result)
-        cv2.imwrite(f"/image_outputs/res_{args['direction'].split('/')[-1]}",image_points_result)
+        
+        if not os.path.exists('./image_outputs/'):
+          os.mkdir('./image_outputs/')
+        try:
+          name = args['direction'].split('/')[-1]
+        except:
+          name = args['direction']
+        cv2.imwrite(f"./image_outputs/res_" + name, image_points_result)
         # cv2.waitKey()
     if args['option'] == 'folder_images':
         dir = args['direction']
@@ -58,9 +64,15 @@ if __name__ == "__main__":
           # cv2.waitKey()
     if args['option'] == 'video':
         cap = cv2.VideoCapture(args['direction'])
-        if args['save_video']:
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            out = cv2.VideoWriter('result-point.avi', fourcc, 30, (512,256))
+        if not os.path.exists('./video_outputs/'):
+            os.mkdir('./video_outputs/')
+        try:
+          name = args['direction'].split('/')[-1]
+        except:
+          name = args['direction']
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter('./video_outputs/' + name, fourcc, 30, (512,256))
+        
         while cap.isOpened():
             prevTime = time.time()
             ret, image = cap.read()
@@ -78,8 +90,7 @@ if __name__ == "__main__":
             # image_lane = net.get_image_lane()
             cv2.putText(image_points, s, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0))
             # cv2.imshow("image",image_points)
-            if args['save_video']:
-              out.write(image_points)
+            out.write(image_points)
             key = cv2.waitKey(1)
             if not ret or key == ord('q'):
                 break
