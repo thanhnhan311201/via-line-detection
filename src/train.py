@@ -87,9 +87,9 @@ def Training(epoch_model, loss_model, flag):
         if loss_though_epoch < min_loss:
             lane_agent.save_model('best', loss_though_epoch)
             min_loss = loss_though_epoch
-        lane_agent.save_model(int(epoch), loss_though_epoch)
-        sampling_list = copy.deepcopy(lane_agent.get_data_list())
-        lane_agent.sample_reset()
+        # lane_agent.save_model(int(epoch), loss_though_epoch)
+            sampling_list = copy.deepcopy(lane_agent.get_data_list())
+            lane_agent.sample_reset()
 
         #evaluation:turn it off when training.
         # if epoch >= 0 and epoch%1 == 0:
