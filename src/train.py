@@ -76,7 +76,7 @@ def Training(epoch_model, loss_model, flag):
             print("epoch : " + str(epoch))
             print("step : " + str(step))
             loss_p = lane_agent.train(inputs, target_lanes, target_h, epoch, lane_agent, data_list)
-            torch.cuda.syQnchronize()
+            torch.cuda.synchronize()
             loss_p = loss_p.cpu().data
             loss_though_epoch = loss_p
                 
