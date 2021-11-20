@@ -1,7 +1,3 @@
-%cd /content/drive/MyDrive/Competition/UIT_Car_Racing/Lane_line_detection/via-line-detection/src/
-
-%%writefile evaluation.py
-
 import cv2
 import json 
 import torch
