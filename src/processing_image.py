@@ -1,8 +1,10 @@
 import numpy as np
 import cv2
 import math
-from parameters import Parameters
-# from src.parameters import Parameters
+try:
+    from parameters import Parameters
+except:
+    from src.parameters import Parameters
 
 p = Parameters()
 
