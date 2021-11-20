@@ -91,12 +91,17 @@ def Training(epoch_model, loss_model, flag):
             step += 1
         if loss_though_epoch < min_loss:
             try:
-                os.remove(glob2.glob('savefile/best*')[0])
+                best_model = glob2.glob('savefile/best*')[0]
+                best_loss = float(best_model.split('_')[1][7:-1])
+                if loss_though_epoch < best_loss:
+                    os.remove(best_model)
+                    print(f'Best model: ({epoch}, {loss_though_epoch})')
+                    lane_agent.save_model('best', loss_though_epoch)
+                    min_loss = loss_though_epoch
             except:
-                pass
-            print(f'Best model: ({epoch}, {loss_though_epoch})')
-            lane_agent.save_model('best', loss_though_epoch)
-            min_loss = loss_though_epoch
+                print(f'Best model: ({epoch}, {loss_though_epoch})')
+                lane_agent.save_model('best', loss_though_epoch)
+                min_loss = loss_though_epoch
         lane_agent.save_model(int(epoch), loss_though_epoch)
         sampling_list = copy.deepcopy(lane_agent.get_data_list())
         lane_agent.sample_reset()
