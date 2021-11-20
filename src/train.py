@@ -77,7 +77,10 @@ def Training(epoch_model, loss_model, flag):
             #util.visualize_points(inputs[0], target_lanes[0], target_h[0])
             print("epoch : " + str(epoch))
             print("step : " + str(step))
-            loss_p = lane_agent.train(inputs, target_lanes, target_h, epoch, lane_agent, data_list)
+            try:
+              loss_p = lane_agent.train(inputs, target_lanes, target_h, epoch, lane_agent, data_list)
+            except:
+              continue
             torch.cuda.synchronize()
             loss_p = loss_p.cpu().data
             loss_though_epoch = loss_p
