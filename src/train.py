@@ -132,7 +132,7 @@ if __name__ == '__main__':
     parser.add_argument('-m','--model_weight', type=str)
     args = vars(parser.parse_args())
 
-    flaag = False
+    flag = False
     if args['model_weight']:
       model = args['model_weight']
       flag = True
