@@ -1,9 +1,14 @@
+%cd /content/drive/MyDrive/Competition/UIT_Car_Racing/Lane_line_detection/via-line-detection/src/
+
+%%writefile train.py
+
 #############################################################################################################
 ##
 ##  Source code for training. In this source code, there are initialize part, training part, ...
 ##
 #############################################################################################################
 
+import sys
 import cv2
 import torch
 import agent
@@ -22,7 +27,7 @@ p = Parameters()
 ## Training
 ## 
 ###############################################################
-def Training():
+def Training(epoch_model, loss_model, flag):
     print('Training')
 
     ####################################################################
@@ -44,7 +49,7 @@ def Training():
         lane_agent = agent.Agent()
     else:
         lane_agent = agent.Agent()
-        lane_agent.load_weights(34, "tensor(0.7828)")
+        lane_agent.load_weights(epoch_model, f"tensor({loss_model})")
 
     ##############################
     ## Check GPU
@@ -61,7 +66,12 @@ def Training():
     step = 0
     sampling_list = None
     loss_though_epoch = 0
-    for epoch in range(p.n_epoch):
+    min_loss = sys.float_info.min
+    if flag == True:
+      begin_epoch = epoch_model + 1
+    else:
+      begin_epoch = 0
+    for epoch in range(begin_epoch, p.n_epoch):
         lane_agent.training_mode()
         for inputs, target_lanes, target_h, test_image, data_list in loader.Generate(sampling_list):
             #training
@@ -69,7 +79,7 @@ def Training():
             print("epoch : " + str(epoch))
             print("step : " + str(step))
             loss_p = lane_agent.train(inputs, target_lanes, target_h, epoch, lane_agent, data_list)
-            torch.cuda.synchronize()
+            torch.cuda.syQnchronize()
             loss_p = loss_p.cpu().data
             loss_though_epoch = loss_p
                 
@@ -77,6 +87,9 @@ def Training():
                 lane_agent.save_model(int(step/1000), loss_p)
                 testing(lane_agent, test_image, step, loss_p)
             step += 1
+        if loss_though_epoch < min_loss:
+            lane_agent.save_model('best', loss_though_epoch)
+            min_loss = loss_though_epoch
         lane_agent.save_model(int(epoch), loss_though_epoch)
         sampling_list = copy.deepcopy(lane_agent.get_data_list())
         lane_agent.sample_reset()
@@ -118,4 +131,16 @@ def testing(lane_agent, test_image, step, loss):
 
     
 if __name__ == '__main__':
-    Training()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m','--pretrained_model', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
+    parser.add_argument('-m','--model_weight', type=str)
+    args = vars(parser.parse_args())
+
+    flaag = False
+    if args['model_weight']:
+      model = args['model_weight']
+      flag = True
+    else:
+      model = args['pretrained_model']
+    epoch_model, loss_model = int(model.split('_')[0]), float(model.split('_')[1][7:-1])
+    Training(epoch_model, loss_model, flag)
