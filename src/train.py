@@ -4,6 +4,8 @@
 ##
 #############################################################################################################
 
+import glob2
+import os
 import argparse
 import sys
 import cv2
@@ -63,7 +65,7 @@ def Training(epoch_model, loss_model, flag):
     step = 0
     sampling_list = None
     loss_though_epoch = 0
-    min_loss = sys.float_info.max
+    min_loss = 9999
     if flag == True:
       begin_epoch = epoch_model + 1
     else:
@@ -85,6 +87,11 @@ def Training(epoch_model, loss_model, flag):
                 testing(lane_agent, test_image, step, loss_p)
             step += 1
         if loss_though_epoch < min_loss:
+            try:
+                os.remove(glob2.glob('savefile/best*')[0])
+            except:
+                pass
+            print(f'Best model: ({epoch}, {loss_though_epoch})')
             lane_agent.save_model('best', loss_though_epoch)
             min_loss = loss_though_epoch
         lane_agent.save_model(int(epoch), loss_though_epoch)
