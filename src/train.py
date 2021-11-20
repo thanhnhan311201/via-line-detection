@@ -129,8 +129,8 @@ def testing(lane_agent, test_image, step, loss):
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pretrained_model', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
-    parser.add_argument('--model_weight', type=str)
+    parser.add_argument('-p', '--pretrained_model', type=str, default='32_tensor(1.1001)_lane_detection_network.pkl')
+    parser.add_argument('-m' ,'--model_weight', type=str)
     args = vars(parser.parse_args())
 
     flag = False
