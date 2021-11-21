@@ -16,7 +16,7 @@ parser.add_argument('-m','--model_weight', type=str, default='32_tensor(1.1001)_
 args = vars(parser.parse_args())
     
 model = args['model_weight']
-epoch_model, loss_model = int(model.split('_')[0]), float(model.split('_')[1][7:-1])
+epoch_model, loss_model = int(model.split('_')[0]), model.split('_')[1][7:-1]
 
 p = Parameters()
 loader = Generator()
