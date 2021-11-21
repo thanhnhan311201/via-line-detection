@@ -154,5 +154,5 @@ if __name__ == '__main__':
       flag = True
     else:
       model = args['pretrained_model']
-    epoch_model, loss_model = int(model.split('_')[0]), float(model.split('_')[1][7:-1])
+    epoch_model, loss_model = int(model.split('_')[0]), model.split('_')[1][7:-1]
     Training(epoch_model, loss_model, flag)
